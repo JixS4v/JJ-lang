@@ -1,9 +1,9 @@
-#include <stdio.h>
-#include <ctype.h>
 #include <string.h>
+#include <ctype.h>
 #include <regex.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef enum token_types{IDENTIFIER, ASSIGN, INT, INT_LITERAL, LEFT_PARENS, RIGHT_PARENS, SEMICOLON}token;
 
@@ -96,15 +96,10 @@ int main(int argc, char *argv[])
 			{
 				if(token_array_size>=OG_symbol_table_size)
 				{
-					token_array=realloc(token_array, (token_array_size+1)*sizeof(token));
+					token_array=realloc(token_array, (token_array_size+22)*sizeof(token));
 					printf("Resizing token array \n");
 				}	
 				charBuffer[0] = currentCharacter;
-				if(token_array_size>=OG_symbol_table_size)
-				{
-					token_array = realloc(token_array, (token_array_size+1)*sizeof(token));
-					printf("Resizing token array \n");
-				}
 				token_array[token_array_size] = to_token(charBuffer);
 				token_array_size++;
 				char_buffer_size = 0;
@@ -113,6 +108,7 @@ int main(int argc, char *argv[])
 			continue;
 		}
 		if(char_buffer_size>=OG_token_size)
+
 		{
 			charBuffer = realloc(charBuffer, (char_buffer_size+1)*sizeof(char));	
 			printf("Resizing character buffer \n");
