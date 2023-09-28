@@ -68,8 +68,17 @@ int main(int argc, char *argv[])
 		if(is_separator(currentCharacter))
 		{
 			printf("Found Separator \n");
-			if(char_buffer_size==0&&!isspace(currentCharacter))
+			if(token_array_size>=OG_symbol_table_size)
 			{
+				token_array=realloc(token_array,(token_array_size+1)*sizeof(token));
+				printf("Resizing token array \n");
+			}	
+			printf("Found Separator \n");
+			if(char_buffer_size==0)
+			{
+				if(isspace(currentCharacter)){
+					continue;
+				}
 				charBuffer[0] = currentCharacter;
 				token_array[token_array_size] = to_token(charBuffer);
 				token_array_size++;
@@ -77,11 +86,7 @@ int main(int argc, char *argv[])
 				charBuffer=realloc(charBuffer, OG_token_size*sizeof(char));
 				continue;
 			}
-			if(token_array_size>=OG_symbol_table_size)
-			{
-				token_array=realloc(token_array, (token_array_size+1)*sizeof(token));
-				printf("Resizing token array \n");
-			}	
+			
 			token_array[token_array_size] = to_token(charBuffer);
 			token_array_size++;
 			memset(charBuffer, 0, sizeof(char)*char_buffer_size);
@@ -89,10 +94,16 @@ int main(int argc, char *argv[])
 			char_buffer_size = 0;
 			if(!isspace(currentCharacter))
 			{
+				if(token_array_size>=OG_symbol_table_size)
+				{
+					token_array=realloc(token_array, (token_array_size+1)*sizeof(token));
+					printf("Resizing token array \n");
+				}	
 				charBuffer[0] = currentCharacter;
 				if(token_array_size>=OG_symbol_table_size)
 				{
 					token_array = realloc(token_array, (token_array_size+1)*sizeof(token));
+					printf("Resizing token array \n");
 				}
 				token_array[token_array_size] = to_token(charBuffer);
 				token_array_size++;
