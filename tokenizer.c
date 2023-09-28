@@ -4,6 +4,7 @@
 #include <regex.h>
 #include <stdbool.h>
 #include <stdlib.h>
+
 typedef enum token_types{IDENTIFIER, ASSIGN, INT, INT_LITERAL, LEFT_PARENS, RIGHT_PARENS, SEMICOLON}token;
 
 regex_t separator_regex;
@@ -96,6 +97,7 @@ int main(int argc, char *argv[])
 				token_array[token_array_size] = to_token(charBuffer);
 				token_array_size++;
 				char_buffer_size = 0;
+				memset(charBuffer, 0, sizeof(char)*1);
 			}
 			continue;
 		}
