@@ -1,18 +1,19 @@
 #include <stdio.h>
+#include <ctype.h>
 #include <string.h>
 #include <regex.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
 typedef enum token_types{IDENTIFIER, ASSIGN, INT, INT_LITERAL, LEFT_PARENS, RIGHT_PARENS, SEMICOLON}token;
 
 regex_t separator_regex;
 regex_t number_regex;
-int OG_token_size = 16;
-int OG_symbol_table_size = 20;
+int OG_token_size = 1;
+int OG_symbol_table_size = 1;
 
 token to_token(char set[])
 {
+	printf("Tokenizing %s \n",set);
 	switch(set[0])
 	{
 		case '=':
@@ -24,13 +25,13 @@ token to_token(char set[])
 		case ';':
 			return SEMICOLON;
 	}
-	if(strcmp(set, "int"))
+	if(strcmp(set, "int")==0)
 	{
 		return INT;
 	}
 	if(regexec(&number_regex, set, 0, NULL, 0)==0)
 	{
-		printf("found int literal");
+		printf("found int literal \n");
 		return INT_LITERAL;
 	}
 	return IDENTIFIER;
@@ -38,19 +39,11 @@ token to_token(char set[])
 
 bool is_separator(char character)
 {
-	char t_char[1];
-	t_char[0] = character;
-	
-	if(regexec(&separator_regex, t_char, 0, NULL, 0)==0)	
-	{
-		return true;
-	}
-	return false;
+	return (isspace(character) || character == '=' || character == '(' || character == ')' || character == ';' );
 }
 
 int main(int argc, char *argv[])
 {
-	regcomp(&separator_regex, "=*\(*)*;*\s*\n*", 0);
 	regcomp(&number_regex, "^[0-9]*$", 0);
 
 	FILE* pCode;
@@ -64,56 +57,64 @@ int main(int argc, char *argv[])
 	char currentCharacter;
 	char* charBuffer;
 	charBuffer = malloc(OG_token_size*sizeof(char));
+	memset(charBuffer, 0, OG_token_size*sizeof(char));
 	printf("allocated character buffer for the first time \n");
 	int char_buffer_size = 0;
 
 	do{
+		printf("Token number %i \n", token_array_size);
 		currentCharacter = fgetc(pCode);
 		if(is_separator(currentCharacter))
 		{
-			if(char_buffer_size==0&&currentCharacter!=' ')
+			printf("Found Separator \n");
+			if(char_buffer_size==0&&!isspace(currentCharacter))
 			{
 				charBuffer[0] = currentCharacter;
 				token_array[token_array_size] = to_token(charBuffer);
 				token_array_size++;
 				memset(charBuffer, 0, sizeof(char));
+				charBuffer=realloc(charBuffer, OG_token_size*sizeof(char));
 				continue;
 			}
 			if(token_array_size>=OG_symbol_table_size)
 			{
-				printf("line 82");
 				token_array=realloc(token_array, (token_array_size+1)*sizeof(token));
+				printf("Resizing token array \n");
 			}	
 			token_array[token_array_size] = to_token(charBuffer);
 			token_array_size++;
 			memset(charBuffer, 0, sizeof(char)*char_buffer_size);
+			charBuffer=realloc(charBuffer, OG_token_size*sizeof(char));
 			char_buffer_size = 0;
-			if(currentCharacter!=' ')
+			if(!isspace(currentCharacter))
 			{
 				charBuffer[0] = currentCharacter;
 				if(token_array_size>=OG_symbol_table_size)
 				{
-					printf("Line 93");
 					token_array = realloc(token_array, (token_array_size+1)*sizeof(token));
 				}
 				token_array[token_array_size] = to_token(charBuffer);
 				token_array_size++;
-				memset(charBuffer, 0, sizeof(char));
+				char_buffer_size = 0;
 			}
 			continue;
 		}
 		if(char_buffer_size>=OG_token_size)
 		{
-			printf("Line 103");
 			charBuffer = realloc(charBuffer, (char_buffer_size+1)*sizeof(char));	
+			printf("Resizing character buffer \n");
 		}
 		charBuffer[char_buffer_size] = currentCharacter;
 		char_buffer_size++;
-		printf("added to the char buffer");
+		printf("added to the char buffer \n");
 	}
 	while(currentCharacter != EOF);
 	free(charBuffer);
 	printf("token_array %i \n", token_array);
+	int i;
+	for(i = 0; i<=token_array_size; i++){
+		printf("Token number %i: %i \n",i,token_array[i]);
+	}
 	fclose(pCode);
 }
 
