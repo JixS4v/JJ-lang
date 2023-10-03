@@ -1,6 +1,7 @@
-v = 22;
-int variable = 57;
-print(ahr2);
-int PENv = 9023985;
-IAM(arst);
-boobs();
+int main()
+{
+	int a = 2;
+	int b = 3;
+	int c = a + b;
+	return c;
+}
