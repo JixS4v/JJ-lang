@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "tokens.h"
+#include "array.h"
 
 regex_t separator_regex;
 regex_t number_regex;
@@ -91,14 +92,14 @@ int main(int argc, char *argv[])
 				}
 				charBuffer[0] = currentCharacter;
 				current_symbol = make_symbol(charBuffer);
-				token_array = append_to_array(token_array, token_array_index, &current_symbol, sizeof(symbol));
+				token_array = append_to_array(token_array, token_array_size, &current_symbol, sizeof(symbol));
 				token_array_size++;
 				memset(charBuffer, 0, sizeof(char));
 				charBuffer=realloc(charBuffer, sizeof(char));
 				continue;
 			}
 			current_symbol = make_symbol(charBuffer);
-			token_array = append_to_array(token_array, token_array_index, &current_symbol, sizeof(symbol));
+			token_array = append_to_array(token_array, token_array_size, &current_symbol, sizeof(symbol));
 			token_array_size++;
 			memset(charBuffer, 0, sizeof(char)*char_buffer_size);
 			charBuffer=realloc(charBuffer, sizeof(char));
@@ -107,7 +108,7 @@ int main(int argc, char *argv[])
 			{
 				charBuffer[0] = currentCharacter;
 				current_symbol = make_symbol(charBuffer);
-				token_array = append_to_array(token_array, token_array_index, &current_symbol, sizeof(symbol));
+				token_array = append_to_array(token_array, token_array_size, &current_symbol, sizeof(symbol));
 				token_array_size++;
 				char_buffer_size = 0;
 				memset(charBuffer, 0, sizeof(char)*1);
@@ -122,7 +123,7 @@ int main(int argc, char *argv[])
 	if(char_buffer_size>0)
 	{
 		current_symbol = make_symbol(charBuffer);
-		token_array = append_to_array(token_array, token_array_index, &current_symbol, sizeof(symbol));
+		token_array = append_to_array(token_array, token_array_size, &current_symbol, sizeof(symbol));
 	}
 	else
 	{
