@@ -1,3 +1,3 @@
 typedef enum {
-	INT
+	TYPE_INT
 }datatype;
