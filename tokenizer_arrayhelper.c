@@ -8,8 +8,6 @@
 
 regex_t separator_regex;
 regex_t number_regex;
-int OG_token_size = 1;
-int OG_symbol_table_size = 1;
 
 token to_token(char* set)
 {
@@ -64,18 +62,19 @@ int main(int argc, char *argv[])
 	
 	pCode = fopen("code.j", "r");
 	symbol* token_array;
-	token_array = malloc(OG_symbol_table_size*sizeof(symbol));
+	token_array = malloc(sizeof(symbol));
 
 	printf("Allocated token array for the first time \n");
 	int token_array_size = 0;
 
 	char currentCharacter;
 	char* charBuffer;
-	charBuffer = malloc(OG_token_size*sizeof(char));
-	memset(charBuffer, 0, OG_token_size*sizeof(char));
+	charBuffer = malloc(sizeof(char));
+	memset(charBuffer, 0, sizeof(char));
 	printf("allocated character buffer for the first time \n");
 	int char_buffer_size = 0;
 
+	symbol current_symbol;
 	do{
 		printf("Token number %i \n", token_array_size);
 		currentCharacter = fgetc(pCode);
@@ -85,63 +84,45 @@ int main(int argc, char *argv[])
 		if(is_separator(currentCharacter))
 		{
 			printf("Found Separator \n");
-			if(token_array_size>=OG_symbol_table_size)
-			{
-				token_array=realloc(token_array,(token_array_size+1)*sizeof(symbol));
-				printf("Resizing token array \n");
-			}	
 			if(char_buffer_size==0)
 			{
 				if(isspace(currentCharacter)){
 					continue;
 				}
 				charBuffer[0] = currentCharacter;
-				token_array[token_array_size] = make_symbol(charBuffer);
+				current_symbol = make_symbol(charBuffer);
+				token_array = append_to_array(token_array, token_array_index, &current_symbol, sizeof(symbol));
 				token_array_size++;
 				memset(charBuffer, 0, sizeof(char));
-				charBuffer=realloc(charBuffer, OG_token_size*sizeof(char));
+				charBuffer=realloc(charBuffer, sizeof(char));
 				continue;
 			}
-			
-			token_array[token_array_size] = make_symbol(charBuffer);
+			current_symbol = make_symbol(charBuffer);
+			token_array = append_to_array(token_array, token_array_index, &current_symbol, sizeof(symbol));
 			token_array_size++;
 			memset(charBuffer, 0, sizeof(char)*char_buffer_size);
-			charBuffer=realloc(charBuffer, OG_token_size*sizeof(char));
+			charBuffer=realloc(charBuffer, sizeof(char));
 			char_buffer_size = 0;
 			if(!isspace(currentCharacter))
 			{
-				if(token_array_size>=OG_symbol_table_size)
-				{
-					token_array=realloc(token_array, (token_array_size+1)*sizeof(symbol));
-					printf("Resizing token array \n");
-				}	
 				charBuffer[0] = currentCharacter;
-				token_array[token_array_size] = make_symbol(charBuffer);
+				current_symbol = make_symbol(charBuffer);
+				token_array = append_to_array(token_array, token_array_index, &current_symbol, sizeof(symbol));
 				token_array_size++;
 				char_buffer_size = 0;
 				memset(charBuffer, 0, sizeof(char)*1);
 			}
 			continue;
 		}
-		if(char_buffer_size>=OG_token_size)
-
-		{
-			charBuffer = realloc(charBuffer, (char_buffer_size+1)*sizeof(char));	
-			printf("Resizing character buffer \n");
-		}
-		charBuffer[char_buffer_size] = currentCharacter;
+		append_to_array(charBuffer, char_buffer_size, &currentCharacter, sizeof(char));
 		char_buffer_size++;
 		printf("added to the char buffer \n");
 	}
 	while(currentCharacter != EOF);
 	if(char_buffer_size>0)
 	{
-		if(token_array_size >= OG_symbol_table_size)
-		{
-			token_array= realloc(token_array, (token_array_size+1)*sizeof(symbol));
-			token_array[token_array_size] = make_symbol(charBuffer);
-		}	
-		
+		current_symbol = make_symbol(charBuffer);
+		token_array = append_to_array(token_array, token_array_index, &current_symbol, sizeof(symbol));
 	}
 	else
 	{
