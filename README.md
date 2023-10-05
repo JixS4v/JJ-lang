@@ -1,2 +1,2 @@
 # JJ lang
- Shitty Programming Language I'm developing to learn C
+ Shitty Compiler for the worst language ever I'm making to learn C
