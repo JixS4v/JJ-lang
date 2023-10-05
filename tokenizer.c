@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 
 	FILE* pCode;
 	
-	pCode = fopen("code.j", "r");
+	pCode = fopen("code.jj", "r");
 	symbol* token_array;
 	token_array = malloc(sizeof(symbol));
 
