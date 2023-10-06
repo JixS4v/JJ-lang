@@ -5,3 +5,5 @@ typedef struct
 	token token;
 	char* string;
 } symbol;
+
+void free_symbol(symbol* to_free, int length);

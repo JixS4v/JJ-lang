@@ -55,6 +55,16 @@ bool is_separator(char character)
 	return (isspace(character) || character == '=' || character == '(' || character == ')' || character == ';' );
 }
 
+void free_symbol(symbol* to_free, int length)
+{
+	int i;
+	for(i=0;i<length;i++)
+	{
+		free(to_free[i].string);
+	}
+	free(to_free);
+}
+
 int main(int argc, char *argv[])
 {
 	regcomp(&number_regex, "^[0-9]*$", 0);
