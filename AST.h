@@ -11,10 +11,11 @@ struct NODE{
 		DEFINT,
 		ASSIGNVAR,
 		ADD,
+		NODE_IDENTIFIER,
 	}tag;
 	union {
 		struct NUMBER {int number;} NUMBER;// regular-ass number 
-		struct IDENTIFIER {char* identifier;} IDENTIFIER;// variable name
+		struct NODE_IDENTIFIER {char* identifier;} IDENTIFIER;// variable name
 		struct DEFINT { NODE *identifier;} DEFINT;// define operator of a variable
 		struct ASSIGN { NODE *identifier; NODE *value;} ASSIGN;// opperation to assign a variable
 	       	struct ADD { NODE *left; NODE *right;} ADD;// performs a sum of two values	
